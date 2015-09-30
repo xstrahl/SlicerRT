@@ -404,13 +404,6 @@ void vtkMRMLSegmentationsDisplayableManager3D::vtkInternal::UpdateDisplayNodePip
   // Get segmentation display node
   vtkMRMLSegmentationDisplayNode* segmentationDisplayNode = vtkMRMLSegmentationDisplayNode::SafeDownCast(displayNode);
 
-  // Determine which representation to show
-  std::string polyDataRepresenatationName = segmentationDisplayNode->DeterminePolyDataDisplayRepresentationName();
-  if (polyDataRepresenatationName.empty())
-    {
-    return;
-    }
-
   // Get segmentation
   vtkMRMLSegmentationNode* segmentationNode = vtkMRMLSegmentationNode::SafeDownCast(
     segmentationDisplayNode->GetDisplayableNode() );
@@ -423,6 +416,18 @@ void vtkMRMLSegmentationsDisplayableManager3D::vtkInternal::UpdateDisplayNodePip
     {
     return;
     }
+  if (segmentation->GetNumberOfSegments() == 0)
+    {
+    return;
+    }
+
+  // Determine which representation to show
+  std::string polyDataRepresenatationName = segmentationDisplayNode->DeterminePolyDataDisplayRepresentationName();
+  if (polyDataRepresenatationName.empty())
+    {
+    return;
+    }
+
   // Make sure the requested representation exists
   if (!segmentation->CreateRepresentation(polyDataRepresenatationName))
     {

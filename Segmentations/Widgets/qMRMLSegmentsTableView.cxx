@@ -63,10 +63,10 @@ public:
 
 public:
   /// Segmentation MRML node containing shown segments
-  vtkMRMLSegmentationNode* SegmentationNode;
+  vtkWeakPointer<vtkMRMLSegmentationNode> SegmentationNode;
 
   /// Model or labelmap volume MRML node containing a representation (for import/export)
-  vtkMRMLDisplayableNode* RepresentationNode;
+  vtkWeakPointer<vtkMRMLDisplayableNode> RepresentationNode;
 
   /// Mode of segment table. See modes \sa SegmentTableMode
   qMRMLSegmentsTableView::SegmentTableMode Mode;
@@ -79,8 +79,6 @@ private:
 qMRMLSegmentsTableViewPrivate::qMRMLSegmentsTableViewPrivate(qMRMLSegmentsTableView& object)
   : q_ptr(&object)
 {
-  this->SegmentationNode = NULL;
-  this->RepresentationNode = NULL;
 }
 
 //-----------------------------------------------------------------------------

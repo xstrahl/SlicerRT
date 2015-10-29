@@ -52,6 +52,7 @@
 #include <vtkMRMLDisplayNode.h>
 #include <vtkMRMLModelNode.h>
 #include <vtkMRMLScene.h>
+#include <vtkMRMLSliceNode.h>
 
 // VTK includes
 #include <vtkColorTransferFunction.h>
@@ -629,6 +630,7 @@ void qSlicerIsodoseModuleWidget::setIsolineVisibility(bool visible)
   for (int i=0; i<childModelNodes->GetNumberOfItems(); ++i)
   {
     vtkMRMLModelNode* modelNode = vtkMRMLModelNode::SafeDownCast(childModelNodes->GetItemAsObject(i));
+    modelNode->GetDisplayNode()->SetVisibility(true);
     modelNode->GetDisplayNode()->SetSliceIntersectionVisibility(visible);
   }
 }
@@ -660,14 +662,32 @@ void qSlicerIsodoseModuleWidget::setIsosurfaceVisibility(bool visible)
     return;
   }
 
+  vtkCollection* sliceNodes = this->mrmlScene()->GetNodesByClass("vtkMRMLSliceNode");
+  sliceNodes->InitTraversal();
+
   vtkSmartPointer<vtkCollection> childModelNodes = vtkSmartPointer<vtkCollection>::New();
   modelHierarchyNode->GetChildrenModelNodes(childModelNodes);
   childModelNodes->InitTraversal();
   for (int i=0; i<childModelNodes->GetNumberOfItems(); ++i)
   {
     vtkMRMLModelNode* modelNode = vtkMRMLModelNode::SafeDownCast(childModelNodes->GetItemAsObject(i));
-    modelNode->GetDisplayNode()->SetVisibility(visible);
+    modelNode->GetDisplayNode()->SetVisibility(true);
+
+    if (!visible)
+    {
+      for (int j = 0; j< sliceNodes->GetNumberOfItems(); ++j)
+      {
+        vtkMRMLSliceNode* sliceNode =
+          vtkMRMLSliceNode::SafeDownCast(sliceNodes->GetItemAsObject(j));
+        modelNode->GetDisplayNode()->AddViewNodeID(sliceNode->GetID());
+      }
+    }
+    else
+    {
+      modelNode->GetDisplayNode()->RemoveAllViewNodeIDs();
+    }
   }
+  sliceNodes->Delete();
 }
 
 //------------------------------------------------------------------------------

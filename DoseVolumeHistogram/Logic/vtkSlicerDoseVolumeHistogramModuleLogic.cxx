@@ -241,12 +241,6 @@ void vtkSlicerDoseVolumeHistogramModuleLogic::OnMRMLSceneNodeRemoved(vtkMRMLNode
     return;
   }
 
-  // Release removed double array node to prevent memory leak
-  if (node->IsA("vtkMRMLDoubleArrayNode"))
-  {
-    node->Delete();
-  }
-
   if (node->IsA("vtkMRMLScalarVolumeNode") || node->IsA("vtkMRMLDoubleArrayNode")
     || node->IsA("vtkMRMLSegmentationNode")
     || node->IsA("vtkMRMLChartNode") || node->IsA("vtkMRMLDoseVolumeHistogramNode"))
